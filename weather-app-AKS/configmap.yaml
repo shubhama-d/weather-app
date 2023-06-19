@@ -9,4 +9,4 @@ data:
   AUTH_PORT: "8000"
   WEATHER_HOST: weather
   WEATHER_PORT: "5000"
-  APIKEY: 2325dddd86msh9005c979f2020b2p1ffae1jsnd9c68b204cb2
+  APIKEY: put your key here 
