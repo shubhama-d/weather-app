@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqldb-deployment
+  labels:
+    app: weatherapp
+    env: poc
+
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels: 
+      env: poc 
+  template:
+    metadata:
+      name: sqldb-pod
+      labels:
+        env: poc 
+    spec: 
+      containers:
+        - name: mysqldb
+          image: mysql
+          ports:
+          -  name: liveness-port
+             containerPort: 3306
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysqlrootpassword
+                key: MYSQL_ROOT_PASSWORD     
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysqldb
+spec:
+  selector:
+    env: poc 
+  ports:
+  - port: 3306
+    protocol: TCP 
+    targetPort: 3306
+
+
+    

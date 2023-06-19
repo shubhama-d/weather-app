@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-deployment
+  labels:
+    app: weatherapp
+    env: poc
+
+
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels: 
+      env: poc 
+  template:
+    metadata:
+      name: ui-pod
+      labels:
+        env: poc 
+    spec: 
+      containers:
+        - name: ui
+          image: shubhamad/ui:0.0.1
+          ports:
+          -  name: liveness-port
+             containerPort: 3000
+          resources: #CHANGE
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1024Mi #256Mi        
+          readinessProbe:
+            httpGet:
+              path: /
+              port: liveness-port
+            failureThreshold: 5
+            periodSeconds: 10
+            initialDelaySeconds: 60
+          livenessProbe:
+            httpGet:
+              path: /
+              port: liveness-port
+            failureThreshold: 5
+            periodSeconds: 10
+            initialDelaySeconds: 60
+          env:
+          - name: AUTH_HOST
+            value: ${AUTH_SERVICE_HOST}
+          - name: AUTH_PORT
+            value: ${AUTH_SERVICE_PORT}
+          - name: WEATHER_HOST
+            value: ${WEATHER_SERVICE_HOST}
+          - name: WEATHER_PORT
+            value: ${WEATHER_SERVICE_PORT}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui
+spec:
+  selector:
+    env: poc 
+  ports:
+  - port: 3000
+    protocol: TCP 
+    targetPort: 3000
+  type: LoadBalancer
+
+
+    

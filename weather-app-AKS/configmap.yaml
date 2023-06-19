@@ -1,0 +1,12 @@
+apiVersion: v1 
+kind: ConfigMap
+metadata:
+  name: cfmap
+data:
+  DB_HOST: mysqldb
+  DB_PASSWORD: User@123
+  AUTH_HOST: auth
+  AUTH_PORT: "8000"
+  WEATHER_HOST: weather
+  WEATHER_PORT: "5000"
+  APIKEY: 2325dddd86msh9005c979f2020b2p1ffae1jsnd9c68b204cb2

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authservice-deployment
+  labels:
+    app: weatherapp
+    env: poc
+
+
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels: 
+      env: poc 
+  template:
+    metadata:
+      name: auth-pod
+      labels:
+        env: poc 
+    spec: 
+      containers:
+        - name: auth 
+          image: shubhamad/auth:0.0.1
+          ports:
+          -  name: liveness-port
+             containerPort: 8000
+          env:
+          - name: DB_HOST
+            value: mysqldb
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysqlrootpassword
+                key: MYSQL_ROOT_PASSWORD 
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth 
+spec:
+  selector:
+    env: poc 
+  ports:
+  - port: 8000
+    protocol: TCP 
+    targetPort: 8000
+
+    
